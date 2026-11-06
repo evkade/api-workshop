@@ -1,0 +1,101 @@
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --text: #1c1f24;
+  --muted: #5f6672;
+  --border: #dde1e7;
+  --accent: #2f5bd3;
+  --accent-text: #ffffff;
+  --danger: #b42318;
+  --warning-bg: #fff4e5;
+  --warning-border: #f0b357;
+  --error-bg: #fdecec;
+  --error-border: #e5a3a3;
+  --ok: #1f7a45;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; padding: 24px 16px 48px; }
+main, .page-header { max-width: 1100px; margin: 0 auto; }
+h1 { margin: 0 0 4px; }
+h2, h3 { margin: 0; }
+h3 { font-size: 1rem; margin-bottom: 8px; }
+.muted { color: var(--muted); margin: 0 0 16px; }
+
+.schedule { display: grid; gap: 12px; margin-top: 16px; }
+.slot { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: start; }
+.room-header { font-weight: 600; color: var(--muted); font-size: 0.9rem; }
+.slot-time { font-weight: 600; padding-top: 12px; font-variant-numeric: tabular-nums; }
+.slot-sessions { display: grid; grid-template-columns: repeat(var(--room-count), minmax(0, 1fr)); gap: 12px; }
+
+.session-card {
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  cursor: pointer;
+  display: grid;
+  gap: 4px;
+}
+.session-card:hover, .session-card:focus-visible { border-color: var(--accent); outline: none; }
+.session-card .title { font-weight: 600; }
+.session-card .details { color: var(--muted); font-size: 0.9rem; }
+.seats { font-size: 0.9rem; font-weight: 600; color: var(--ok); margin: 0; }
+.seats.few { color: #b25e09; }
+.seats.full { color: var(--danger); }
+.seats.unknown { color: var(--muted); font-weight: 400; }
+
+.api-error {
+  border: 1px solid var(--error-border);
+  background: var(--error-bg);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 8px 0;
+  font-size: 0.9rem;
+}
+.api-error.not-implemented { border-color: var(--warning-border); background: var(--warning-bg); }
+.api-error.success { border-color: #9fd3b4; background: #e8f6ee; }
+.api-error code { font-weight: 600; }
+
+dialog {
+  width: min(560px, calc(100vw - 32px));
+  border: none;
+  border-radius: 12px;
+  padding: 20px;
+  color: var(--text);
+  background: var(--surface);
+}
+dialog::backdrop { background: rgb(0 0 0 / 0.35); }
+dialog section { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 16px; }
+.dialog-header { display: flex; justify-content: space-between; gap: 12px; align-items: start; margin-bottom: 4px; }
+.icon-button { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--muted); }
+
+.form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; }
+.form label { display: grid; gap: 4px; font-size: 0.85rem; color: var(--muted); }
+input { font: inherit; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; width: 100%; }
+button[type="submit"], .danger {
+  font: inherit;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 14px;
+  cursor: pointer;
+  background: var(--accent);
+  color: var(--accent-text);
+}
+.danger { background: var(--danger); }
+.registrations { margin: 0; padding-left: 20px; }
+.registrations:empty::before { content: "No registrations yet"; color: var(--muted); margin-left: -20px; }
+
+@media (max-width: 700px) {
+  .slot { grid-template-columns: 1fr; gap: 4px; }
+  .room-header { font-weight: 600; color: var(--muted); font-size: 0.9rem; }
+.slot-time { padding-top: 0; }
+  .slot-sessions { grid-template-columns: 1fr; }
+  .form { grid-template-columns: 1fr; }
+}

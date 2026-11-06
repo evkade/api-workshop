@@ -1,0 +1,102 @@
+# Ready-made requests for the VS Code extension "REST Client" (humao.rest-client).
+# Click "Send Request" above a request to send it.
+
+@base = http://localhost:3000
+
+### Example: list all sessions
+GET {{base}}/api/sessions
+
+### Example: create a session
+POST {{base}}/api/sessions
+Content-Type: application/json
+
+{
+  "title": "My own session",
+  "speaker": "Kim Larsson",
+  "room": "Room B",
+  "startsAt": "2026-11-20T15:00",
+  "endsAt": "2026-11-20T15:45",
+  "capacity": 10
+}
+
+### Task 1: get a session
+GET {{base}}/api/sessions/s1
+
+### Task 1: session that does not exist (404)
+GET {{base}}/api/sessions/s999
+
+### Task 2: delete a session (204)
+DELETE {{base}}/api/sessions/s8
+
+### Task 3: update a session
+PATCH {{base}}/api/sessions/s2
+Content-Type: application/json
+
+{
+  "title": "REST for real (updated)"
+}
+
+### Task 3: invalid body (400)
+PATCH {{base}}/api/sessions/s2
+Content-Type: application/json
+
+{
+  "capacity": -5
+}
+
+### Task 4: register an attendee
+POST {{base}}/api/sessions/s3/registrations
+Content-Type: application/json
+
+{
+  "name": "Kim Larsson",
+  "email": "kim@example.com"
+}
+
+### Task 4: invalid email (400)
+POST {{base}}/api/sessions/s3/registrations
+Content-Type: application/json
+
+{
+  "name": "Kim Larsson",
+  "email": "not-an-email"
+}
+
+### Task 5: list registrations
+GET {{base}}/api/sessions/s4/registrations
+
+### Task 7: s4 has 3 seats and 2 registrations – this one takes the last seat…
+POST {{base}}/api/sessions/s4/registrations
+Content-Type: application/json
+
+{
+  "name": "Dana Ek",
+  "email": "dana@example.com"
+}
+
+### Task 7: …and now it is fully booked (409)
+POST {{base}}/api/sessions/s4/registrations
+Content-Type: application/json
+
+{
+  "name": "Eli Strom",
+  "email": "eli@example.com"
+}
+
+### Task 8: already registered (anna is already registered for s1)
+POST {{base}}/api/sessions/s1/registrations
+Content-Type: application/json
+
+{
+  "name": "Anna Karlsson",
+  "email": "anna@example.com"
+}
+
+### Task 9: schedule conflict (ben is registered for s4 10:30–11:15, s3 runs 10:00–10:45)
+POST {{base}}/api/sessions/s3/registrations
+Content-Type: application/json
+
+{
+  "name": "Ben Olsson",
+  "email": "ben@example.com"
+}

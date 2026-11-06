@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Conference schedule</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="page-header">
+      <h1>Conference schedule</h1>
+      <p class="muted">Click a session to see details and register.</p>
+    </header>
+
+    <main>
+      <div id="schedule-error" class="api-error" hidden></div>
+      <div id="schedule" class="schedule" aria-live="polite"></div>
+    </main>
+
+    <dialog id="session-dialog">
+      <div class="dialog-header">
+        <h2 id="session-title"></h2>
+        <button type="button" class="icon-button" id="close-dialog" aria-label="Close">✕</button>
+      </div>
+      <p id="session-meta" class="muted"></p>
+      <p id="session-seats" class="seats"></p>
+      <div id="session-error" class="api-error" hidden></div>
+
+      <section>
+        <h3>Register</h3>
+        <form id="registration-form" class="form">
+          <label>Name <input name="name" autocomplete="name" /></label>
+          <label>Email <input name="email" type="email" autocomplete="email" /></label>
+          <button type="submit">Register</button>
+        </form>
+        <div id="registration-result" class="api-error" hidden></div>
+      </section>
+
+      <section>
+        <h3>Registered</h3>
+        <div id="registrations-error" class="api-error" hidden></div>
+        <ul id="registrations" class="registrations"></ul>
+      </section>
+
+      <section>
+        <h3>Edit</h3>
+        <form id="edit-form" class="form">
+          <label>Title <input name="title" /></label>
+          <label>Seats <input name="capacity" type="number" min="1" /></label>
+          <button type="submit">Save</button>
+        </form>
+        <div id="edit-result" class="api-error" hidden></div>
+      </section>
+
+      <section class="danger-zone">
+        <button type="button" id="delete-session" class="danger">Delete session</button>
+        <div id="delete-result" class="api-error" hidden></div>
+      </section>
+    </dialog>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

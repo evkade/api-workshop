@@ -1,0 +1,25 @@
+{
+  "name": "api-workshop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Workshop: build a conference API with Express, TypeScript and Zod",
+  "type": "module",
+  "engines": {
+    "node": ">=20.6"
+  },
+  "scripts": {
+    "dev": "tsx watch server/src/server.ts",
+    "start": "tsx server/src/server.ts",
+    "test": "node --import tsx --test server/tests/all.ts",
+    "test:watch": "node --import tsx --test --watch server/tests/all.ts"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "tsx": "^4.20.0",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.0.0"
+  }
+}
