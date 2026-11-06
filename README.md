@@ -245,4 +245,4 @@ Done with everything? Pick any:
 
 ## Solution
 
-A suggested solution is on the [`solution`](https://github.com/evkade/api-workshop/tree/solution) branch. Have a look afterwards!
+A suggested solution will be published on the `solution` branch after the workshop.
