@@ -23,7 +23,7 @@ export const sessionSchema = sessionFields.refine(endsAfterStart.check, endsAfte
 export const sessionPatchSchema = sessionFields.partial().refine(endsAfterStart.check, endsAfterStart.error)
 
 // ─── Task 4 ────────────────────────────────────────────────
-// TODO: Write the schema for a registration.
-// • name: a non-empty string
-// • email: a valid email address (in Zod 4: z.email())
-export const registrationSchema = z.object({})
+export const registrationSchema = z.object({
+  name: z.string().trim().min(1),
+  email: z.email(),
+})

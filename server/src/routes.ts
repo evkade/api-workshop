@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { sendError, sendNotImplemented, sendValidationError } from "./errors.ts"
+import { sendError, sendValidationError } from "./errors.ts"
 import { registrationSchema, sessionPatchSchema, sessionSchema } from "./schemas.ts"
 import {
   countRegistrations,
@@ -17,11 +17,13 @@ import {
 export const router = Router()
 
 // ─── Task 6: Show seats left ────────────────────────────────
-// Every session response goes through this function.
-// TODO: Add the field seatsLeft (capacity minus number of registrations).
-// Useful: countRegistrations(sessionId)
 function toSessionResponse(session: Session) {
-  return { ...session }
+  return { ...session, seatsLeft: session.capacity - countRegistrations(session.id) }
+}
+
+// ─── Task 9: Schedule conflict ──────────────────────────────
+function overlaps(a: Session, b: Session): boolean {
+  return a.startsAt < b.endsAt && b.startsAt < a.endsAt
 }
 
 // ─── Example: List all sessions ─────────────────────────────
@@ -30,7 +32,6 @@ router.get("/api/sessions", (req, res) => {
 })
 
 // ─── Example: Create a session ──────────────────────────────
-// Note: This is how you validate a body with Zod.
 router.post("/api/sessions", (req, res) => {
   const result = sessionSchema.safeParse(req.body)
   if (!result.success) return sendValidationError(res, result.error)
@@ -40,45 +41,74 @@ router.post("/api/sessions", (req, res) => {
 })
 
 // ─── Task 1: Get a session ──────────────────────────────────
-// 200 + the session, or 404 SESSION_NOT_FOUND if it does not exist.
-// Useful: req.params.id, getSession(id), sendError(res, 404, "SESSION_NOT_FOUND", "…")
 router.get("/api/sessions/:id", (req, res) => {
-  sendNotImplemented(res, "Task 1: GET /api/sessions/:id")
+  const session = getSession(req.params.id)
+  if (!session) return sendError(res, 404, "SESSION_NOT_FOUND", `Session ${req.params.id} does not exist`)
+
+  res.json(toSessionResponse(session))
 })
 
 // ─── Task 2: Delete a session ───────────────────────────────
-// 204 without a body, or 404 SESSION_NOT_FOUND.
-// Useful: deleteSession(id) returns true/false, res.status(204).end()
 router.delete("/api/sessions/:id", (req, res) => {
-  sendNotImplemented(res, "Task 2: DELETE /api/sessions/:id")
+  const deleted = deleteSession(req.params.id)
+  if (!deleted) return sendError(res, 404, "SESSION_NOT_FOUND", `Session ${req.params.id} does not exist`)
+
+  res.status(204).end()
 })
 
 // ─── Task 3: Update a session ───────────────────────────────
-// 200 + the updated session, 400 VALIDATION_ERROR for an invalid body, 404 SESSION_NOT_FOUND.
-// Useful: sessionPatchSchema, sendValidationError(res, error), updateSession(id, changes)
 router.patch("/api/sessions/:id", (req, res) => {
-  sendNotImplemented(res, "Task 3: PATCH /api/sessions/:id")
+  const result = sessionPatchSchema.safeParse(req.body)
+  if (!result.success) return sendValidationError(res, result.error)
+
+  const session = updateSession(req.params.id, result.data)
+  if (!session) return sendError(res, 404, "SESSION_NOT_FOUND", `Session ${req.params.id} does not exist`)
+
+  res.json(toSessionResponse(session))
 })
 
-// ─── Task 4: Register an attendee ───────────────────────────
-// 201 + the new registration, 400 VALIDATION_ERROR, 404 SESSION_NOT_FOUND.
-// Write registrationSchema in schemas.ts first.
-// Useful: registrationSchema, createRegistration(sessionId, { name, email })
-//
-// Tasks 7–9 are rules you add here, before the registration is saved:
-// • Task 7: 409 SESSION_FULL if all seats are taken.
-//   Useful: countRegistrations(sessionId), session.capacity
-// • Task 8: 409 ALREADY_REGISTERED if the email is already registered for the session.
-//   Useful: listRegistrationsByEmail(email)
-// • Task 9: 409 SCHEDULE_CONFLICT if the person is registered for a session that overlaps in time.
-//   Useful: listRegistrationsByEmail(email), getSession(id). There is a hint in the README.
+// ─── Task 4: Register an attendee (+ rules in tasks 7–9) ────
 router.post("/api/sessions/:id/registrations", (req, res) => {
-  sendNotImplemented(res, "Task 4: POST /api/sessions/:id/registrations")
+  const session = getSession(req.params.id)
+  if (!session) return sendError(res, 404, "SESSION_NOT_FOUND", `Session ${req.params.id} does not exist`)
+
+  const result = registrationSchema.safeParse(req.body)
+  if (!result.success) return sendValidationError(res, result.error)
+  const { email } = result.data
+
+  // Task 7: Session full
+  if (countRegistrations(session.id) >= session.capacity) {
+    return sendError(res, 409, "SESSION_FULL", `${session.title} is fully booked`)
+  }
+
+  const existingRegistrations = listRegistrationsByEmail(email)
+
+  // Task 8: Already registered
+  if (existingRegistrations.some((registration) => registration.sessionId === session.id)) {
+    return sendError(res, 409, "ALREADY_REGISTERED", `${email} is already registered for ${session.title}`)
+  }
+
+  // Task 9: Schedule conflict
+  const conflictingSession = existingRegistrations
+    .map((registration) => getSession(registration.sessionId))
+    .find((other) => other !== undefined && overlaps(session, other))
+  if (conflictingSession) {
+    return sendError(
+      res,
+      409,
+      "SCHEDULE_CONFLICT",
+      `${email} is already registered for ${conflictingSession.title}, which overlaps in time`,
+    )
+  }
+
+  const registration = createRegistration(session.id, result.data)
+  res.status(201).json(registration)
 })
 
 // ─── Task 5: List registrations ─────────────────────────────
-// 200 + a list of the session's registrations, or 404 SESSION_NOT_FOUND.
-// Useful: listRegistrations(sessionId)
 router.get("/api/sessions/:id/registrations", (req, res) => {
-  sendNotImplemented(res, "Task 5: GET /api/sessions/:id/registrations")
+  const session = getSession(req.params.id)
+  if (!session) return sendError(res, 404, "SESSION_NOT_FOUND", `Session ${req.params.id} does not exist`)
+
+  res.json(listRegistrations(session.id))
 })
