@@ -53,7 +53,7 @@ Then open <http://localhost:3000> in your browser and run `npm run test:watch` i
   # Create a session
   curl -X POST http://localhost:3000/api/sessions \
     -H "Content-Type: application/json" \
-    -d '{"title":"My own session","speaker":"Kim Larsson","room":"Room B","startsAt":"2026-11-20T15:00","endsAt":"2026-11-20T15:45","capacity":10}'
+    -d '{"title":"My own session","speaker":"Kim Larsson","room":"Bistro","startsAt":"2026-11-20T15:00","endsAt":"2026-11-20T15:45","capacity":10}'
 
   # Task 1: get one session
   curl -i http://localhost:3000/api/sessions/s1
@@ -85,7 +85,7 @@ Start by reading the two **examples** at the top of `routes.ts`. They show the p
 
 ```jsonc
 // Session
-{ "id": "s1", "title": "…", "speaker": "…", "room": "Room A",
+{ "id": "s1", "title": "…", "speaker": "…", "room": "Amfi",
   "startsAt": "2026-11-20T09:00", "endsAt": "2026-11-20T09:45", "capacity": 120 }
 
 // Registration
@@ -242,10 +242,11 @@ Done with everything? Pick any of the following!
 
 - **Cancellation:** `DELETE /api/registrations/:id` (`deleteRegistration` already exists in the store).
 - **Personal agenda:** `GET /api/attendees/:email/sessions` returns every session a person is registered for, sorted by time.
-- **Filtering:** `GET /api/sessions?room=Room%20A` and `?speaker=…`.
+- **Filtering:** `GET /api/sessions?room=Amfi` and `?speaker=…`.
 - **Room conflict:** `POST` and `PATCH` on sessions should respond `409 ROOM_CONFLICT` if the room is already taken.
 - **Waiting list:** when a session is full, you end up on a waiting list. When someone cancels, the first person in line gets the seat.
 - **SQLite:** replace the in-memory data in `store.ts` with `node:sqlite` (Node 22.5+) so the data survives a restart.
+- **UI / UX:** improve the frontend in `client/`. For example, make the schedule easier to read on a phone, add a way to create a session, or show which sessions you are registered for.
 
 ## More technical information
 
