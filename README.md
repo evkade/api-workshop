@@ -110,10 +110,10 @@ All errors have the same format. Use `sendError(res, status, errorCode, message)
 | 3   | Update a session       | `PATCH /api/sessions/:id`              | 200, 400 `VALIDATION_ERROR`, 404 |
 | 4   | Register an attendee   | `POST /api/sessions/:id/registrations` | 201, 400, 404                    |
 | 5   | List registrations     | `GET /api/sessions/:id/registrations`  | 200, 404                         |
-| 6   | Show seats left        | `seatsLeft` in every session response  |                                  |
-| 7   | Fully booked           | `POST …/registrations`                 | 409 `SESSION_FULL`               |
-| 8   | Duplicate registration | `POST …/registrations`                 | 409 `ALREADY_REGISTERED`         |
-| 9   | Schedule conflict      | `POST …/registrations`                 | 409 `SCHEDULE_CONFLICT`          |
+| 6   | Show seats left        | Every endpoint that returns a session  | `seatsLeft` in the session       |
+| 7   | Fully booked           | `POST /api/sessions/:id/registrations` | 409 `SESSION_FULL`               |
+| 8   | Duplicate registration | `POST /api/sessions/:id/registrations` | 409 `ALREADY_REGISTERED`         |
+| 9   | Schedule conflict      | `POST /api/sessions/:id/registrations` | 409 `SCHEDULE_CONFLICT`          |
 
 ### 1. Get a session
 
