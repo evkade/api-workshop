@@ -8,12 +8,11 @@ The stack is Express, TypeScript and Zod for validation. Feel free to read more 
 
 **You will only need to work in one file: [`server/src/routes.ts`](server/src/routes.ts)** (except for in [`server/src/schemas.ts`](server/src/schemas.ts) which is needed in task 4).
 
-
 ## Goal of the exercise
 
 Your goal is to try to complete as many tasks as you can, to make the website completely functioning!
 
-- After doing tasks 1 to 6, the whole frontend will be working. 
+- After doing tasks 1 to 6, the whole frontend will be working.
 - Task 7 to 9 add additional business logic.
 - If you want, you can then pick some bonus tasks in the [bonus](#bonus) category!
 
@@ -26,8 +25,8 @@ The tasks are **independent of each other**. If you are stuck or if you think an
 From the terminal:
 
 ```sh
-# No git? Open https://github.com/evkade/api-workshop.git in your browser, click **Code → Download ZIP** and unzip it instead of doing the first step here. 
-git clone https://github.com/evkade/api-workshop.git 
+# No git? Open https://github.com/evkade/api-workshop.git in your browser, click **Code → Download ZIP** and unzip it instead of doing the first step here.
+git clone https://github.com/evkade/api-workshop.git
 cd api-workshop
 npm install
 npm run dev
@@ -37,11 +36,11 @@ Then open <http://localhost:3000> in your browser and run `npm run test:watch` i
 
 ### Good to know
 
-| Command | What it does |
-| --- | --- |
-| `npm run dev` | Starts the server on port 3000. It serves both the API and the frontend. Restarts when you save a server file. |
-| `npm run test:watch` | Runs the tests and reruns them when you save. Watch the tasks turn green! |
-| `npm test` | Runs the tests once. |
+| Command              | What it does                                                                                                   |
+| -------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`        | Starts the server on port 3000. It serves both the API and the frontend. Restarts when you save a server file. |
+| `npm run test:watch` | Runs the tests and reruns them when you save. Watch the tasks turn green!                                      |
+| `npm test`           | Runs the tests once.                                                                                           |
 
 - The data lives in memory and is reset when the server restarts.
 - Try the endpoints with `curl` or the frontend. Add `-i` to `curl` to see the status code:
@@ -58,6 +57,7 @@ Then open <http://localhost:3000> in your browser and run `npm run test:watch` i
   # Task 1: get one session
   curl -i http://localhost:3000/api/sessions/s1
   ```
+
 - Endpoints that are not done yet respond `501 NOT_IMPLEMENTED` and tell you which task they belong to. The frontend shows the same text.
 
 ## How the code is organized
@@ -103,21 +103,21 @@ All errors have the same format. Use `sendError(res, status, errorCode, message)
 
 ## Tasks
 
-| # | Task | Endpoint | Responses | ~time |
-| --- | --- | --- | --- | --- |
-| 1 | Get a session | `GET /api/sessions/:id` | 200, 404 `SESSION_NOT_FOUND` | 5 min |
-| 2 | Delete a session | `DELETE /api/sessions/:id` | 204, 404 | 5 min |
-| 3 | Update a session | `PATCH /api/sessions/:id` | 200, 400 `VALIDATION_ERROR`, 404 | 8 min |
-| 4 | Register an attendee | `POST /api/sessions/:id/registrations` | 201, 400, 404 | 10 min |
-| 5 | List registrations | `GET /api/sessions/:id/registrations` | 200, 404 | 4 min |
-| 6 | Show seats left | `seatsLeft` in every session response | | 5 min |
-| 7 | Fully booked | `POST …/registrations` | 409 `SESSION_FULL` | 4 min |
-| 8 | Duplicate registration | `POST …/registrations` | 409 `ALREADY_REGISTERED` | 4 min |
-| 9 | Schedule conflict | `POST …/registrations` | 409 `SCHEDULE_CONFLICT` | 10 min |
+| #   | Task                   | Endpoint                               | Responses                        |
+| --- | ---------------------- | -------------------------------------- | -------------------------------- |
+| 1   | Get a session          | `GET /api/sessions/:id`                | 200, 404 `SESSION_NOT_FOUND`     |
+| 2   | Delete a session       | `DELETE /api/sessions/:id`             | 204, 404                         |
+| 3   | Update a session       | `PATCH /api/sessions/:id`              | 200, 400 `VALIDATION_ERROR`, 404 |
+| 4   | Register an attendee   | `POST /api/sessions/:id/registrations` | 201, 400, 404                    |
+| 5   | List registrations     | `GET /api/sessions/:id/registrations`  | 200, 404                         |
+| 6   | Show seats left        | `seatsLeft` in every session response  |                                  |
+| 7   | Fully booked           | `POST …/registrations`                 | 409 `SESSION_FULL`               |
+| 8   | Duplicate registration | `POST …/registrations`                 | 409 `ALREADY_REGISTERED`         |
+| 9   | Schedule conflict      | `POST …/registrations`                 | 409 `SCHEDULE_CONFLICT`          |
 
 ### 1. Get a session
 
-`GET /api/sessions/:id` responds `200` with the session. If it does not exist, it responds `404` with the error code `SESSION_NOT_FOUND`.
+Implement `GET /api/sessions/:id`. It should return status code `200` and the session. If the session does not exist, it should return `404` with the error code `SESSION_NOT_FOUND`.
 
 <details>
 <summary>Hint</summary>
@@ -130,7 +130,7 @@ All errors have the same format. Use `sendError(res, status, errorCode, message)
 
 ### 2. Delete a session
 
-`DELETE /api/sessions/:id` responds `204 No Content` (without a body). If the session does not exist, it responds `404 SESSION_NOT_FOUND`.
+Implement `DELETE /api/sessions/:id`. It should delete the session and return status code `204` without a body. If the session does not exist, it should return `404` with the error code `SESSION_NOT_FOUND`.
 
 <details>
 <summary>Hint</summary>
@@ -142,7 +142,7 @@ All errors have the same format. Use `sendError(res, status, errorCode, message)
 
 ### 3. Update a session
 
-`PATCH /api/sessions/:id` changes only the fields that are sent and responds `200` with the updated session. An invalid body gives `400 VALIDATION_ERROR` and an unknown session gives `404`.
+Implement `PATCH /api/sessions/:id`. It should change only the fields that are sent in the body and return status code `200` and the updated session. If the body is invalid, it should return `400` with the error code `VALIDATION_ERROR`. If the session does not exist, it should return `404` with the error code `SESSION_NOT_FOUND`.
 
 <details>
 <summary>Hint</summary>
@@ -155,9 +155,9 @@ All errors have the same format. Use `sendError(res, status, errorCode, message)
 
 ### 4. Register an attendee
 
-`POST /api/sessions/:id/registrations` with `{ "name": "…", "email": "…" }` responds `201` with the new registration.
+First write `registrationSchema` in `server/src/schemas.ts`: `name` must not be empty and `email` must be a valid email address.
 
-First write `registrationSchema` in `server/src/schemas.ts`: `name` must not be empty and `email` must be a valid email address. An invalid body gives `400`, an unknown session gives `404`.
+Then implement `POST /api/sessions/:id/registrations` with the body `{ "name": "…", "email": "…" }`. It should save the registration and return status code `201` and the new registration. If the body is invalid, it should return `400` with the error code `VALIDATION_ERROR`. If the session does not exist, it should return `404` with the error code `SESSION_NOT_FOUND`.
 
 <details>
 <summary>Hint</summary>
@@ -170,7 +170,7 @@ First write `registrationSchema` in `server/src/schemas.ts`: `name` must not be 
 
 ### 5. List registrations
 
-`GET /api/sessions/:id/registrations` responds `200` with a list of the session's registrations (an empty list if nobody is registered) and `404` if the session does not exist.
+Implement `GET /api/sessions/:id/registrations`. It should return status code `200` and a list of the session's registrations (an empty list if nobody is registered). If the session does not exist, it should return `404` with the error code `SESSION_NOT_FOUND`.
 
 <details>
 <summary>Hint</summary>
@@ -181,7 +181,7 @@ First write `registrationSchema` in `server/src/schemas.ts`: `name` must not be 
 
 ### 6. Show seats left
 
-Every response that contains a session should also have the field `seatsLeft`: the number of seats minus the number of registrations.
+Add the field `seatsLeft` to every response that contains a session. It should be the number of seats minus the number of registrations.
 
 <details>
 <summary>Hint</summary>
@@ -192,7 +192,7 @@ Change the function `toSessionResponse` at the top of `routes.ts`. Every endpoin
 
 ### 7. Fully booked
 
-When all seats are taken, a new registration should respond `409` with `SESSION_FULL`.
+Update `POST /api/sessions/:id/registrations`. If all seats are taken, it should not save the registration and return `409` with the error code `SESSION_FULL`.
 
 <details>
 <summary>Hint</summary>
@@ -203,7 +203,7 @@ Check this in the POST handler from task 4, before calling `createRegistration`.
 
 ### 8. Duplicate registration
 
-If the same email address is already registered for the session, the response should be `409 ALREADY_REGISTERED`.
+Update `POST /api/sessions/:id/registrations`. If the same email address is already registered for the session, it should not save the registration and return `409` with the error code `ALREADY_REGISTERED`.
 
 <details>
 <summary>Hint</summary>
@@ -214,7 +214,7 @@ If the same email address is already registered for the session, the response sh
 
 ### 9. Schedule conflict
 
-You can't be in two places at once. If the email address is already registered for a session that overlaps in time, the response should be `409 SCHEDULE_CONFLICT`. A session that ends at 11:00 does **not** conflict with one that starts at 11:00.
+You can't be in two places at once. Update `POST /api/sessions/:id/registrations`. If the email address is already registered for another session that overlaps in time, it should not save the registration and return `409` with the error code `SCHEDULE_CONFLICT`. A session that ends at 11:00 does **not** conflict with one that starts at 11:00.
 
 <details>
 <summary>Hint 1</summary>
