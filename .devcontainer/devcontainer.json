@@ -13,9 +13,6 @@
     }
   },
   "customizations": {
-    "vscode": {
-      "extensions": ["humao.rest-client"]
-    },
     "codespaces": {
       "openFiles": ["README.md", "server/src/routes.ts"]
     }
