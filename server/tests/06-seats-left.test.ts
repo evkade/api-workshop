@@ -20,7 +20,7 @@ describe("Task 6: seatsLeft in session responses", () => {
     const response = await api.post("/api/sessions", {
       title: "New session",
       speaker: "Tess Tester",
-      room: "Room A",
+      room: "Amfi",
       startsAt: "2026-11-20T16:00",
       endsAt: "2026-11-20T16:45",
       capacity: 15,
