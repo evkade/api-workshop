@@ -18,7 +18,7 @@ describe("Task 4: POST /api/sessions/:id/registrations", () => {
     assert.equal(response.body.sessionId, session.id, "The registration should belong to the right session")
     assert.equal(response.body.email, "kim@example.com", "The response should contain the email address")
     assert.ok(response.body.id, "The response should contain the registration id")
-    assert.equal(listRegistrations(session.id).length, 1, "The registration was not saved – use createRegistration()")
+    assert.equal(listRegistrations(session.id).length, 1, "The registration was not saved, use createRegistration()")
   })
 
   test("responds 400 VALIDATION_ERROR if the email is invalid", async () => {

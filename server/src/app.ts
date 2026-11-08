@@ -21,7 +21,7 @@ export function createApp() {
       return
     }
     console.error(error)
-    sendError(res, 500, "INTERNAL_ERROR", "Something went wrong in the server – check the terminal")
+    sendError(res, 500, "INTERNAL_ERROR", "Something went wrong in the server, check the terminal")
   })
 
   return app
