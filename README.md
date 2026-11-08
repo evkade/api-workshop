@@ -4,7 +4,7 @@ The goal of this web app is to represent the agenda for a conference. The confer
 
 The frontend is done, but several endpoints in the API are missing. Your job is to build them!
 
-The stack is Express, TypeScript and [Zod](https://zod.dev) for validation. Feel free to read more about this stack online!
+The stack is Express, TypeScript and Zod for validation. Feel free to read more about this stack online!
 
 **You will only need to work in one file: [`server/src/routes.ts`](server/src/routes.ts)** (except for in [`server/src/schemas.ts`](server/src/schemas.ts) which is needed in task 4).
 
