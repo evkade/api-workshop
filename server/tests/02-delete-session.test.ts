@@ -13,7 +13,7 @@ describe("Task 2: DELETE /api/sessions/:id", () => {
 
     expectStatus(response, 204, "when the session is deleted")
     assert.equal(response.body, undefined, "A 204 response should not have a body")
-    assert.equal(getSession(session.id), undefined, "The session still exists after DELETE – use deleteSession()")
+    assert.equal(getSession(session.id), undefined, "The session still exists after DELETE, use deleteSession()")
   })
 
   test("responds 404 SESSION_NOT_FOUND if the session does not exist", async () => {
