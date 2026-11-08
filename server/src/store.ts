@@ -24,14 +24,14 @@ export interface Registration {
 export type NewRegistration = Pick<Registration, "name" | "email">
 
 const seedSessions: Session[] = [
-  { id: "s1", title: "Keynote: APIs that last for ten years", speaker: "Maja Lindqvist", room: "Room A", startsAt: "2026-11-20T09:00", endsAt: "2026-11-20T09:45", capacity: 120 },
-  { id: "s2", title: "REST for real: status codes that mean something", speaker: "Omar Haddad", room: "Room A", startsAt: "2026-11-20T10:00", endsAt: "2026-11-20T10:45", capacity: 40 },
-  { id: "s3", title: "TypeScript for JavaScript developers", speaker: "Elin Berg", room: "Room B", startsAt: "2026-11-20T10:00", endsAt: "2026-11-20T10:45", capacity: 30 },
-  { id: "s4", title: "Workshop: test your API", speaker: "Jonas Ek", room: "Room C", startsAt: "2026-11-20T10:30", endsAt: "2026-11-20T11:15", capacity: 3 },
-  { id: "s5", title: "Security for web developers", speaker: "Sara Nilsson", room: "Room A", startsAt: "2026-11-20T11:00", endsAt: "2026-11-20T11:45", capacity: 50 },
-  { id: "s6", title: "Databases without drama", speaker: "Ali Rahimi", room: "Room B", startsAt: "2026-11-20T13:00", endsAt: "2026-11-20T13:45", capacity: 25 },
-  { id: "s7", title: "Accessibility in practice", speaker: "Hanna Svensson", room: "Room C", startsAt: "2026-11-20T13:00", endsAt: "2026-11-20T14:00", capacity: 20 },
-  { id: "s8", title: "From idea to production", speaker: "Erik Holm", room: "Room A", startsAt: "2026-11-20T14:00", endsAt: "2026-11-20T14:45", capacity: 60 },
+  { id: "s1", title: "Keynote: APIs that last for ten years", speaker: "Maja Lindqvist", room: "Amfi", startsAt: "2026-11-20T09:00", endsAt: "2026-11-20T09:45", capacity: 120 },
+  { id: "s2", title: "REST for real: status codes that mean something", speaker: "Omar Haddad", room: "Amfi", startsAt: "2026-11-20T10:00", endsAt: "2026-11-20T10:45", capacity: 40 },
+  { id: "s3", title: "TypeScript for JavaScript developers", speaker: "Elin Berg", room: "Bistro", startsAt: "2026-11-20T10:00", endsAt: "2026-11-20T10:45", capacity: 30 },
+  { id: "s4", title: "Workshop: test your API", speaker: "Jonas Ek", room: "Garden", startsAt: "2026-11-20T10:30", endsAt: "2026-11-20T11:15", capacity: 3 },
+  { id: "s5", title: "Security for web developers", speaker: "Sara Nilsson", room: "Amfi", startsAt: "2026-11-20T11:00", endsAt: "2026-11-20T11:45", capacity: 50 },
+  { id: "s6", title: "Databases without drama", speaker: "Ali Rahimi", room: "Bistro", startsAt: "2026-11-20T13:00", endsAt: "2026-11-20T13:45", capacity: 25 },
+  { id: "s7", title: "Accessibility in practice", speaker: "Hanna Svensson", room: "Garden", startsAt: "2026-11-20T13:00", endsAt: "2026-11-20T14:00", capacity: 20 },
+  { id: "s8", title: "From idea to production", speaker: "Erik Holm", room: "Amfi", startsAt: "2026-11-20T14:00", endsAt: "2026-11-20T14:45", capacity: 60 },
 ]
 
 const seedRegistrations: Registration[] = [

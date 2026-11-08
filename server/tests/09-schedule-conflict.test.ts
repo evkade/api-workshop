@@ -9,8 +9,8 @@ describe("Task 9: Schedule conflict", () => {
   const api = useTestServer()
 
   test("responds 409 SCHEDULE_CONFLICT if the sessions overlap in time", async () => {
-    const booked = givenSession({ room: "Room A", startsAt: "2026-11-20T10:00", endsAt: "2026-11-20T11:00" })
-    const overlapping = givenSession({ room: "Room B", startsAt: "2026-11-20T10:30", endsAt: "2026-11-20T11:30" })
+    const booked = givenSession({ room: "Amfi", startsAt: "2026-11-20T10:00", endsAt: "2026-11-20T11:00" })
+    const overlapping = givenSession({ room: "Bistro", startsAt: "2026-11-20T10:30", endsAt: "2026-11-20T11:30" })
     createRegistration(booked.id, kim)
 
     const response = await api.post(`/api/sessions/${overlapping.id}/registrations`, kim)

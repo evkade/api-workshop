@@ -51,7 +51,11 @@ function hide(...elements) {
   for (const element of elements) element.hidden = true
 }
 
+const roomHues = [265, 210, 330, 150, 35, 185]
+const roomHue = (roomIndex) => roomHues[roomIndex % roomHues.length]
+
 const time = (dateTime) => dateTime.slice(11, 16)
+const minutesSinceMidnight = (dateTime) => Number(dateTime.slice(11, 13)) * 60 + Number(dateTime.slice(14, 16))
 
 function renderSeats(element, session) {
   element.className = "seats"
@@ -71,12 +75,16 @@ function renderRoomHeader(rooms) {
   const roomsElement = document.createElement("div")
   roomsElement.className = "slot-sessions"
   roomsElement.style.setProperty("--room-count", rooms.length)
-  for (const room of rooms) {
+  for (const [index, room] of rooms.entries()) {
     const roomElement = document.createElement("div")
     roomElement.textContent = room
+    roomElement.style.setProperty("--room-hue", roomHue(index))
     roomsElement.append(roomElement)
   }
-  header.append(document.createElement("div"), roomsElement)
+  const locationLabel = document.createElement("div")
+  locationLabel.className = "location-label"
+  locationLabel.textContent = "Location"
+  header.append(locationLabel, roomsElement)
   return header
 }
 
@@ -91,50 +99,67 @@ async function loadSchedule() {
 
   const sessions = response.data
   const rooms = [...new Set(sessions.map((session) => session.room))].sort()
-  const slots = Map.groupBy
-    ? Map.groupBy(sessions, (session) => time(session.startsAt))
-    : sessions.reduce((map, session) => map.set(time(session.startsAt), [...(map.get(time(session.startsAt)) ?? []), session]), new Map())
-
   scheduleElement.replaceChildren(renderRoomHeader(rooms))
-  for (const [startTime, slotSessions] of [...slots].sort(([a], [b]) => a.localeCompare(b))) {
-    const slot = document.createElement("div")
-    slot.className = "slot"
-
-    const timeElement = document.createElement("div")
-    timeElement.className = "slot-time"
-    timeElement.textContent = startTime
-
-    const sessionsElement = document.createElement("div")
-    sessionsElement.className = "slot-sessions"
-    sessionsElement.style.setProperty("--room-count", rooms.length)
-
-    for (const session of slotSessions) {
-      const card = document.createElement("button")
-      card.type = "button"
-      card.className = "session-card"
-      card.style.gridColumn = String(rooms.indexOf(session.room) + 1)
-
-      const title = document.createElement("span")
-      title.className = "title"
-      title.textContent = session.title
-      const details = document.createElement("span")
-      details.className = "details"
-      details.textContent = `${time(session.startsAt)}–${time(session.endsAt)} · ${session.room} · ${session.speaker}`
-      const seats = document.createElement("span")
-      renderSeats(seats, session)
-
-      card.append(title, details, seats)
-      card.addEventListener("click", () => openSession(session.id))
-      sessionsElement.append(card)
-    }
-
-    slot.append(timeElement, sessionsElement)
-    scheduleElement.append(slot)
-  }
+  if (sessions.length > 0) scheduleElement.append(renderTimeline(sessions, rooms))
 }
 
-async function openSession(id) {
+function renderTimeline(sessions, rooms) {
+  const firstHour = Math.floor(Math.min(...sessions.map((session) => minutesSinceMidnight(session.startsAt))) / 60)
+  const lastHour = Math.ceil(Math.max(...sessions.map((session) => minutesSinceMidnight(session.endsAt))) / 60)
+  const rowOf = (dateTime) => minutesSinceMidnight(dateTime) - firstHour * 60 + 1
+
+  const timeline = document.createElement("div")
+  timeline.className = "timeline"
+  timeline.style.setProperty("--room-count", rooms.length)
+  timeline.style.setProperty("--minutes", (lastHour - firstHour) * 60)
+
+  for (let hour = firstHour; hour < lastHour; hour++) {
+    const row = String((hour - firstHour) * 60 + 1)
+
+    const line = document.createElement("div")
+    line.className = "hour-line"
+    line.style.gridRow = row
+
+    const label = document.createElement("div")
+    label.className = "slot-time"
+    label.textContent = `${String(hour).padStart(2, "0")}:00`
+    label.style.gridRow = row
+
+    timeline.append(line, label)
+  }
+
+  for (const session of sessions) {
+    const card = renderSessionCard(session, rooms.indexOf(session.room))
+    card.style.gridRow = `${rowOf(session.startsAt)} / ${rowOf(session.endsAt)}`
+    timeline.append(card)
+  }
+  return timeline
+}
+
+function renderSessionCard(session, roomIndex) {
+  const card = document.createElement("button")
+  card.type = "button"
+  card.className = "session-card"
+  card.style.gridColumn = String(roomIndex + 2)
+  card.style.setProperty("--room-hue", roomHue(roomIndex))
+
+  const title = document.createElement("span")
+  title.className = "title"
+  title.textContent = session.title
+  const details = document.createElement("span")
+  details.className = "details"
+  details.textContent = `${time(session.startsAt)}–${time(session.endsAt)} · ${session.room} · ${session.speaker}`
+  const seats = document.createElement("span")
+  renderSeats(seats, session)
+
+  card.append(title, details, seats)
+  card.addEventListener("click", () => openSession(session.id, roomIndex))
+  return card
+}
+
+async function openSession(id, roomIndex) {
   openSessionId = id
+  dialog.style.setProperty("--room-hue", roomHue(roomIndex))
   hide(...dialog.querySelectorAll(".api-error"))
   document.querySelector("#registration-form").reset()
   if (!dialog.open) dialog.showModal()

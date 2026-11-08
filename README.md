@@ -4,7 +4,7 @@ The goal of this web app is to represent the agenda for a conference. The confer
 
 The frontend is done, but several endpoints in the API are missing. Your job is to build them!
 
-The stack is Express, TypeScript and [Zod](https://zod.dev) for validation. Feel free to read more about this stack online!
+The stack is Express, TypeScript and Zod for validation. Feel free to read more about this stack online!
 
 **You will only need to work in one file: [`server/src/routes.ts`](server/src/routes.ts)** (except for in [`server/src/schemas.ts`](server/src/schemas.ts) which is needed in task 4).
 
@@ -17,7 +17,7 @@ Your goal is to try to complete as many tasks as you can, to make the website co
 - Task 7 to 9 add additional business logic.
 - If you want, you can then pick some bonus tasks in the [bonus](#bonus) category!
 
-The tasks are **independent of each other**. If you are stuck or if you think another task is more fun, feel free to skip between them! (Exception: tasks 7–9 build on the endpoint from task 4.)
+The tasks are **independent of each other**. If you are stuck or if you think another task is more fun, feel free to skip between them! (Exception: tasks 7–9 build on the endpoint from task 4, and in task 9 you need to skip the session you are registering for, see its hint.)
 
 ## Getting started
 
@@ -53,7 +53,7 @@ Then open <http://localhost:3000> in your browser and run `npm run test:watch` i
   # Create a session
   curl -X POST http://localhost:3000/api/sessions \
     -H "Content-Type: application/json" \
-    -d '{"title":"My own session","speaker":"Kim Larsson","room":"Room B","startsAt":"2026-11-20T15:00","endsAt":"2026-11-20T15:45","capacity":10}'
+    -d '{"title":"My own session","speaker":"Kim Larsson","room":"Bistro","startsAt":"2026-11-20T15:00","endsAt":"2026-11-20T15:45","capacity":10}'
 
   # Task 1: get one session
   curl -i http://localhost:3000/api/sessions/s1
@@ -85,7 +85,7 @@ Start by reading the two **examples** at the top of `routes.ts`. They show the p
 
 ```jsonc
 // Session
-{ "id": "s1", "title": "…", "speaker": "…", "room": "Room A",
+{ "id": "s1", "title": "…", "speaker": "…", "room": "Amfi",
   "startsAt": "2026-11-20T09:00", "endsAt": "2026-11-20T09:45", "capacity": 120 }
 
 // Registration
@@ -221,6 +221,8 @@ You can't be in two places at once. If the email address is already registered f
 
 Get the person's other registrations with `listRegistrationsByEmail(email)` and look up each session with `getSession`.
 
+Skip the registration for the session they are registering for: a session always overlaps itself, so otherwise a duplicate gives `SCHEDULE_CONFLICT` instead of `ALREADY_REGISTERED` (task 8).
+
 </details>
 
 <details>
@@ -242,10 +244,12 @@ Done with everything? Pick any of the following!
 
 - **Cancellation:** `DELETE /api/registrations/:id` (`deleteRegistration` already exists in the store).
 - **Personal agenda:** `GET /api/attendees/:email/sessions` returns every session a person is registered for, sorted by time.
-- **Filtering:** `GET /api/sessions?room=Room%20A` and `?speaker=…`.
+- **Filtering:** `GET /api/sessions?room=Amfi` and `?speaker=…`.
+- **Safer updates:** `PATCH` should respond `400` if the update leaves the session ending before it starts (for example when only `endsAt` is sent), and `409 CAPACITY_TOO_LOW` if `capacity` goes below the number of registrations, so `seatsLeft` never becomes negative.
 - **Room conflict:** `POST` and `PATCH` on sessions should respond `409 ROOM_CONFLICT` if the room is already taken.
 - **Waiting list:** when a session is full, you end up on a waiting list. When someone cancels, the first person in line gets the seat.
 - **SQLite:** replace the in-memory data in `store.ts` with `node:sqlite` (Node 22.5+) so the data survives a restart.
+- **UI / UX:** improve the frontend in `client/`. For example, make the schedule easier to read on a phone, add a way to create a session, or show which sessions you are registered for.
 
 ## More technical information
 
