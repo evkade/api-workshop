@@ -1,58 +1,63 @@
 # API workshop: Conference API
 
-You have been given a half-finished API for a conference. There are sessions in different rooms, and visitors can register for them. The frontend is done, but several endpoints in the API are missing. Your job is to build them.
+The goal of this web app is to represent the agenda for a conference. The conference includes different sessions in different rooms, and visitors can register for them.
 
-**You only work in one file: [`server/src/routes.ts`](server/src/routes.ts)** (and in task 4 also in [`server/src/schemas.ts`](server/src/schemas.ts)).
+The frontend is done, but several endpoints in the API are missing. Your job is to build them!
 
-The stack is Express, TypeScript and [Zod](https://zod.dev) for validation.
+The stack is Express, TypeScript and [Zod](https://zod.dev) for validation. Feel free to read more about this stack online!
 
-## Goals for the hour
+**You will only need to work in one file: [`server/src/routes.ts`](server/src/routes.ts)** (except for in [`server/src/schemas.ts`](server/src/schemas.ts) which is needed in task 4).
 
-| Level | Tasks | What you get |
-| --- | --- | --- |
-| 🎯 **Core goal** | 1–6 | The whole frontend works. Most people get this far. |
-| 💪 **Well done** | 7–9 | The business rules: fully booked, duplicate registration and schedule conflicts. |
-| 🚀 **Bonus** | | For the fastest, see [Bonus](#bonus). |
 
-The tasks are **independent of each other**. Stuck? Skip to the next task. (Exception: tasks 7–9 build on the endpoint from task 4.)
+## Goal of the exercise
+
+Your goal is to try to complete as many tasks as you can, to make the website completely functioning!
+
+- After doing tasks 1 to 6, the whole frontend will be working. 
+- Task 7 to 9 add additional business logic.
+- If you want, you can then pick some bonus tasks in the [bonus](#bonus) category!
+
+The tasks are **independent of each other**. If you are stuck or if you think another task is more fun, feel free to skip between them! (Exception: tasks 7–9 build on the endpoint from task 4.)
 
 ## Getting started
 
-Pick the option that suits you:
+### Run the project locally
 
-### A. In the browser with StackBlitz (nothing to install)
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/evkade/api-workshop)
-
-Everything starts on its own. Open a new terminal (`+`) and run `npm run test:watch`.
-
-### B. GitHub Codespaces (requires a GitHub account)
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/evkade/api-workshop)
-
-Wait for the server to start. The schedule opens in a tab. Open a new terminal and run `npm run test:watch`.
-
-### C. Locally (requires Node 20.6 or later)
+From the terminal:
 
 ```sh
-git clone https://github.com/evkade/api-workshop.git
+# No git? Open https://github.com/evkade/api-workshop.git in your browser, click **Code → Download ZIP** and unzip it instead of doing the first step here. 
+git clone https://github.com/evkade/api-workshop.git 
 cd api-workshop
 npm install
 npm run dev
 ```
 
-No git? Click **Code → Download ZIP** and unzip it. Then open <http://localhost:3000> and run `npm run test:watch` in a second terminal.
+Then open <http://localhost:3000> in your browser and run `npm run test:watch` in a second terminal.
 
 ### Good to know
 
 | Command | What it does |
 | --- | --- |
-| `npm run dev` | Starts the API and the frontend on port 3000. Restarts when you save. |
+| `npm run dev` | Starts the server on port 3000. It serves both the API and the frontend. Restarts when you save a server file. |
 | `npm run test:watch` | Runs the tests and reruns them when you save. Watch the tasks turn green! |
 | `npm test` | Runs the tests once. |
 
 - The data lives in memory and is reset when the server restarts.
-- [`server/requests.http`](server/requests.http) contains ready-made requests for the VS Code extension [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client). You can also use `curl`, Postman or the frontend.
+- Try the endpoints with `curl` or the frontend. Add `-i` to `curl` to see the status code:
+
+  ```bash
+  # List all sessions
+  curl http://localhost:3000/api/sessions
+
+  # Create a session
+  curl -X POST http://localhost:3000/api/sessions \
+    -H "Content-Type: application/json" \
+    -d '{"title":"My own session","speaker":"Kim Larsson","room":"Room B","startsAt":"2026-11-20T15:00","endsAt":"2026-11-20T15:45","capacity":10}'
+
+  # Task 1: get one session
+  curl -i http://localhost:3000/api/sessions/s1
+  ```
 - Endpoints that are not done yet respond `501 NOT_IMPLEMENTED` and tell you which task they belong to. The frontend shows the same text.
 
 ## How the code is organized
@@ -68,10 +73,9 @@ server/
     app.ts         the Express app, also serves the client (done)
     server.ts      starts the server (done)
   tests/           one test file per task
-  requests.http    ready-made requests for REST Client
 ```
 
-The server serves both the API (`/api/…`) and the client on the same port, so there is only one thing to start.
+There is only one server, on port 3000. It answers requests to `/api/…` with the API and sends the frontend files from `client/` for everything else. That is why `npm run dev` is the only thing you need to start.
 
 All data handling already exists in `store.ts`, for example `getSession(id)`, `deleteSession(id)` and `listRegistrationsByEmail(email)`. Your job is the HTTP part: the right status code, the right response and the right rules.
 
@@ -234,7 +238,7 @@ The times have the format `"2026-11-20T10:00"`, so they can be compared directly
 
 ## Bonus
 
-Done with everything? Pick any:
+Done with everything? Pick any of the following!
 
 - **Cancellation:** `DELETE /api/registrations/:id` (`deleteRegistration` already exists in the store).
 - **Personal agenda:** `GET /api/attendees/:email/sessions` returns every session a person is registered for, sorted by time.
@@ -243,6 +247,54 @@ Done with everything? Pick any:
 - **Waiting list:** when a session is full, you end up on a waiting list. When someone cancels, the first person in line gets the seat.
 - **SQLite:** replace the in-memory data in `store.ts` with `node:sqlite` (Node 22.5+) so the data survives a restart.
 
+## More technical information
+
+Optional reading for those who want to know more about how the project works. You don't need any of this to do the tasks!
+
+### What happens to a request
+
+`server/src/app.ts` sets up the Express app. A request goes through these steps in order:
+
+1. `express.json()` reads a JSON body and puts it in `req.body`. A body that is not valid JSON gives `400 INVALID_JSON`.
+2. `express.static` sends files from `client/` when the URL matches one, for example `/` or `/app.js`.
+3. The router in `routes.ts` handles the API endpoints.
+4. A request to `/api/…` that no route matched gives `404 NOT_FOUND`.
+5. If a handler throws an error, the error handler logs it in the terminal and responds `500 INTERNAL_ERROR`.
+
+### TypeScript without a build step
+
+[tsx](https://tsx.is) runs the `.ts` files directly, so there is no compile step and no `dist/` folder. `tsconfig.json` has `noEmit: true`: it is only used by your editor to check types. That is also why the imports end in `.ts`.
+
+### Validation with Zod
+
+The schemas in `schemas.ts` describe what a valid body looks like. `schema.safeParse(req.body)` never throws. It returns either `{ success: true, data }` with the parsed data, or `{ success: false, error }`. `sendValidationError` turns Zod's error into a list of the fields that failed:
+
+```json
+{
+  "error": "VALIDATION_ERROR",
+  "message": "The request contains invalid data",
+  "details": [{ "path": "capacity", "message": "Too small: expected number to be >0" }]
+}
+```
+
+### The data
+
+`store.ts` keeps sessions and registrations in two plain arrays. New ids are counted up (`s9`, `s10`, …), and `resetStore()` puts back the seed data. Nothing is written to disk.
+
+### The tests
+
+The tests use Node's built-in test runner (`node:test`), so there is no Jest or Vitest to install. For each test file, `useTestServer()` in `server/tests/helpers.ts`:
+
+- starts the app on a free port (`listen(0)`), so the tests never collide with your `npm run dev` server,
+- resets the data before every test, so the tests don't affect each other,
+- sends real HTTP requests with `fetch`, so a test checks the same thing a browser or `curl` would.
+
+When a test fails, the message says what was expected in plain words, for example that an endpoint still responds `501` because the task is not done yet.
+
+### The frontend
+
+`client/` is plain HTML, CSS and JavaScript with no framework and no build step. `app.js` calls the same `/api/…` endpoints with `fetch`, so every endpoint you finish shows up in the page.
+
 ## Solution
 
-A suggested solution will be published on the `solution` branch after the workshop.
+A suggested solution will be published on the `solution` branch after the workshop :)
