@@ -219,15 +219,9 @@ dialog {
   border-color: var(--warning-border);
   background: var(--warning-bg);
 }
-.api-error.not-implemented::before {
-  content: "🚧 ";
-}
 .api-error.success {
   border-color: var(--success-border);
   background: var(--success-bg);
-}
-.api-error.success::before {
-  content: "🎉 ";
 }
 .api-error code {
   font-weight: 700;
