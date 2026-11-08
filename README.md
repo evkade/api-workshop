@@ -1,6 +1,6 @@
 # API workshop: Conference API
 
-The goal of this web-app is to represent the agenda for a conference. The conferences includes different sessions in different rooms, and visitors can register for them.
+The goal of this web app is to represent the agenda for a conference. The conference includes different sessions in different rooms, and visitors can register for them.
 
 The frontend is done, but several endpoints in the API are missing. Your job is to build them!
 
