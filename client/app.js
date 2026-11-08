@@ -66,7 +66,8 @@ function renderSeats(element, session) {
   }
   if (session.seatsLeft <= 0) element.classList.add("full")
   else if (session.seatsLeft <= 3) element.classList.add("few")
-  element.textContent = session.seatsLeft <= 0 ? "Fully booked" : `${session.seatsLeft} of ${session.capacity} seats left`
+  element.textContent =
+    session.seatsLeft <= 0 ? "Fully booked" : `${session.seatsLeft} of ${session.capacity} seats left`
 }
 
 function renderRoomHeader(rooms) {

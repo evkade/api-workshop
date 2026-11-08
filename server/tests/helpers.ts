@@ -77,7 +77,11 @@ export function givenRegistrations(sessionId: string, count: number) {
 
 /** Checks the status code and explains in plain words what went wrong. */
 export function expectStatus(response: ApiResponse, expected: number, situation: string) {
-  assert.equal(response.status, expected, `Expected ${expected} ${situation}, but got ${response.status}${explain(response)}`)
+  assert.equal(
+    response.status,
+    expected,
+    `Expected ${expected} ${situation}, but got ${response.status}${explain(response)}`,
+  )
 }
 
 export function expectError(response: ApiResponse, expectedStatus: number, expectedCode: string, situation: string) {
@@ -98,9 +102,5 @@ function explain(response: ApiResponse): string {
 
 /** For tasks 7–9: they build on the registration endpoint from task 4. */
 export function expectRegistrationEndpointExists(response: ApiResponse) {
-  assert.notEqual(
-    response.status,
-    501,
-    "This task builds on POST /api/sessions/:id/registrations. Do task 4 first.",
-  )
+  assert.notEqual(response.status, 501, "This task builds on POST /api/sessions/:id/registrations. Do task 4 first.")
 }

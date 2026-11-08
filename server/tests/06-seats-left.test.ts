@@ -27,6 +27,10 @@ describe("Task 6: seatsLeft in session responses", () => {
     })
 
     expectStatus(response, 201, "from POST /api/sessions")
-    assert.equal(response.body.seatsLeft, 15, `Expected seatsLeft 15 for a new session, but got ${response.body.seatsLeft}`)
+    assert.equal(
+      response.body.seatsLeft,
+      15,
+      `Expected seatsLeft 15 for a new session, but got ${response.body.seatsLeft}`,
+    )
   })
 })

@@ -13,7 +13,11 @@ describe("Task 3: PATCH /api/sessions/:id", () => {
 
     expectStatus(response, 200, "when the update is valid")
     assert.equal(response.body.title, "New title", "The response should contain the new title")
-    assert.equal(getSession(session.id)?.title, "New title", "The title was not changed in the store – use updateSession()")
+    assert.equal(
+      getSession(session.id)?.title,
+      "New title",
+      "The title was not changed in the store, use updateSession()",
+    )
     assert.equal(getSession(session.id)?.capacity, 10, "Fields that were not sent should be unchanged")
   })
 

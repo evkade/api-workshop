@@ -1,7 +1,13 @@
 import assert from "node:assert/strict"
 import { describe, test } from "node:test"
 import { listRegistrations } from "../src/store.ts"
-import { expectError, expectRegistrationEndpointExists, givenRegistrations, givenSession, useTestServer } from "./helpers.ts"
+import {
+  expectError,
+  expectRegistrationEndpointExists,
+  givenRegistrations,
+  givenSession,
+  useTestServer,
+} from "./helpers.ts"
 
 describe("Task 7: Session full", () => {
   const api = useTestServer()
@@ -17,6 +23,10 @@ describe("Task 7: Session full", () => {
 
     expectRegistrationEndpointExists(response)
     expectError(response, 409, "SESSION_FULL", "when the session is fully booked")
-    assert.equal(listRegistrations(session.id).length, 2, "No new registration should be saved when the session is full")
+    assert.equal(
+      listRegistrations(session.id).length,
+      2,
+      "No new registration should be saved when the session is full",
+    )
   })
 })

@@ -1,4 +1,4 @@
-// In-memory data. Everything here is done – you do not need to change this file.
+// In-memory data. Everything here is done, you do not need to change this file.
 // The data is reset every time the server restarts.
 
 export interface Session {
@@ -23,6 +23,7 @@ export interface Registration {
 
 export type NewRegistration = Pick<Registration, "name" | "email">
 
+// prettier-ignore
 const seedSessions: Session[] = [
   { id: "s1", title: "Keynote: APIs that last for ten years", speaker: "Maja Lindqvist", room: "Amfi", startsAt: "2026-11-20T09:00", endsAt: "2026-11-20T09:45", capacity: 120 },
   { id: "s2", title: "REST for real: status codes that mean something", speaker: "Omar Haddad", room: "Amfi", startsAt: "2026-11-20T10:00", endsAt: "2026-11-20T10:45", capacity: 40 },
@@ -34,6 +35,7 @@ const seedSessions: Session[] = [
   { id: "s8", title: "From idea to production", speaker: "Erik Holm", room: "Amfi", startsAt: "2026-11-20T14:00", endsAt: "2026-11-20T14:45", capacity: 60 },
 ]
 
+// prettier-ignore
 const seedRegistrations: Registration[] = [
   { id: "r1", sessionId: "s1", name: "Anna Karlsson", email: "anna@example.com", registeredAt: "2026-11-01T08:00:00.000Z" },
   { id: "r2", sessionId: "s4", name: "Anna Karlsson", email: "anna@example.com", registeredAt: "2026-11-01T08:01:00.000Z" },
