@@ -17,7 +17,7 @@ Your goal is to try to complete as many tasks as you can, to make the website co
 - Task 7 to 9 add additional business logic.
 - If you want, you can then pick some bonus tasks in the [bonus](#bonus) category!
 
-The tasks are **independent of each other**. If you are stuck or if you think another task is more fun, feel free to skip between them! (Exception: tasks 7–9 build on the endpoint from task 4.)
+The tasks are **independent of each other**. If you are stuck or if you think another task is more fun, feel free to skip between them! (Exception: tasks 7–9 build on the endpoint from task 4, and in task 9 you need to skip the session you are registering for, see its hint.)
 
 ## Getting started
 
@@ -221,6 +221,8 @@ You can't be in two places at once. If the email address is already registered f
 
 Get the person's other registrations with `listRegistrationsByEmail(email)` and look up each session with `getSession`.
 
+Skip the registration for the session they are registering for: a session always overlaps itself, so otherwise a duplicate gives `SCHEDULE_CONFLICT` instead of `ALREADY_REGISTERED` (task 8).
+
 </details>
 
 <details>
@@ -243,6 +245,7 @@ Done with everything? Pick any of the following!
 - **Cancellation:** `DELETE /api/registrations/:id` (`deleteRegistration` already exists in the store).
 - **Personal agenda:** `GET /api/attendees/:email/sessions` returns every session a person is registered for, sorted by time.
 - **Filtering:** `GET /api/sessions?room=Amfi` and `?speaker=…`.
+- **Safer updates:** `PATCH` should respond `400` if the update leaves the session ending before it starts (for example when only `endsAt` is sent), and `409 CAPACITY_TOO_LOW` if `capacity` goes below the number of registrations, so `seatsLeft` never becomes negative.
 - **Room conflict:** `POST` and `PATCH` on sessions should respond `409 ROOM_CONFLICT` if the room is already taken.
 - **Waiting list:** when a session is full, you end up on a waiting list. When someone cancels, the first person in line gets the seat.
 - **SQLite:** replace the in-memory data in `store.ts` with `node:sqlite` (Node 22.5+) so the data survives a restart.

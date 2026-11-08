@@ -11,13 +11,16 @@ const sessionFields = z.object({
   capacity: z.number().int().positive(),
 })
 
-export const sessionSchema = sessionFields.refine((session) => session.startsAt < session.endsAt, {
-  message: "endsAt must be after startsAt",
-  path: ["endsAt"],
-})
+const endsAfterStart = {
+  check: (session: { startsAt?: string; endsAt?: string }) =>
+    session.startsAt === undefined || session.endsAt === undefined || session.startsAt < session.endsAt,
+  error: { message: "endsAt must be after startsAt", path: ["endsAt"] },
+}
+
+export const sessionSchema = sessionFields.refine(endsAfterStart.check, endsAfterStart.error)
 
 /** Like sessionSchema, but every field is optional. Used by PATCH (task 3). */
-export const sessionPatchSchema = sessionFields.partial()
+export const sessionPatchSchema = sessionFields.partial().refine(endsAfterStart.check, endsAfterStart.error)
 
 // ─── Task 4 ────────────────────────────────────────────────
 // TODO: Write the schema for a registration.
