@@ -25,13 +25,12 @@ function toSessionResponse(session: Session) {
 }
 
 // ─── Example: List all sessions ─────────────────────────────
-// Done. Read it – the tasks follow the same pattern.
 router.get("/api/sessions", (req, res) => {
   res.json(listSessions().map(toSessionResponse))
 })
 
 // ─── Example: Create a session ──────────────────────────────
-// Done. This is how you validate a body with Zod.
+// Note: This is how you validate a body with Zod.
 router.post("/api/sessions", (req, res) => {
   const result = sessionSchema.safeParse(req.body)
   if (!result.success) return sendValidationError(res, result.error)
