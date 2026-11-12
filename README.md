@@ -22,6 +22,8 @@ The tasks are **independent of each other**. If you are stuck or if you think an
 
 ### Run the project locally
 
+You need Node 20.6 or later. Check your version with `node -v`. If it is older, install the LTS version from [nodejs.org](https://nodejs.org).
+
 From the terminal:
 
 ```sh
@@ -100,6 +102,26 @@ All errors have the same format. Use `sendError(res, status, errorCode, message)
 ```json
 { "error": "SESSION_NOT_FOUND", "message": "Session s99 does not exist" }
 ```
+
+Validation errors also have a `details` list with one entry per invalid field. `sendValidationError(res, result.error)` builds it for you, see [Validation with Zod](#validation-with-zod).
+
+### Error codes
+
+The status code says what kind of problem it is. The error code says exactly what went wrong.
+
+| Status                    | Error code           | When                                                                          |
+| ------------------------- | -------------------- | ----------------------------------------------------------------------------- |
+| 400 Bad Request           | `VALIDATION_ERROR`   | The body does not match the Zod schema.                                       |
+| 400 Bad Request           | `INVALID_JSON`       | The body is not valid JSON.                                                   |
+| 404 Not Found             | `SESSION_NOT_FOUND`  | There is no session with that id.                                             |
+| 404 Not Found             | `NOT_FOUND`          | There is no endpoint for that method and URL.                                 |
+| 409 Conflict              | `SESSION_FULL`       | All seats are taken (task 7).                                                 |
+| 409 Conflict              | `ALREADY_REGISTERED` | The email address is already registered for the session (task 8).             |
+| 409 Conflict              | `SCHEDULE_CONFLICT`  | The email address is registered for a session that overlaps in time (task 9). |
+| 500 Internal Server Error | `INTERNAL_ERROR`     | The server crashed. Check the terminal.                                       |
+| 501 Not Implemented       | `NOT_IMPLEMENTED`    | The endpoint is a task that is not done yet.                                  |
+
+`INVALID_JSON`, `NOT_FOUND`, `INTERNAL_ERROR` and `NOT_IMPLEMENTED` are already handled for you. The others are the ones you send in the tasks.
 
 ## Tasks
 
