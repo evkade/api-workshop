@@ -4,7 +4,7 @@ The goal of this web app is to represent the agenda for a conference. The confer
 
 The frontend is done, but several endpoints in the API are missing. Your job is to build them!
 
-The stack is Express, TypeScript and Zod for validation. Feel free to read more about this stack online!
+The stack is Express, TypeScript and Zod for validation. See [TECH-STACK.md](TECH-STACK.md) for how each part is used in this project.
 
 **You will only need to work in one file: [`server/src/routes.ts`](server/src/routes.ts)** (except for in [`server/src/schemas.ts`](server/src/schemas.ts) which is needed in task 4).
 
@@ -33,6 +33,8 @@ npm run dev
 ```
 
 Then open <http://localhost:3000> in your browser and run `npm run test:watch` in a second terminal.
+
+Something not working? See [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
 ### Good to know
 
@@ -253,7 +255,7 @@ Done with everything? Pick any of the following!
 
 ## More technical information
 
-Optional reading for those who want to know more about how the project works. You don't need any of this to do the tasks!
+Optional reading for those who want to know more about how the project works. You don't need any of this to do the tasks! For the frameworks and tools, see [TECH-STACK.md](TECH-STACK.md).
 
 ### What happens to a request
 
